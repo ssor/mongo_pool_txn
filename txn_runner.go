@@ -11,6 +11,14 @@ var (
 
 type OpArray []txn.Op
 
+func NewTxnRunnerWithMongoPool(db string, mongoPool *mongo_pool.MongoSessionPool) *TxnRuner {
+	tr := &TxnRuner{}
+	tr.dbName = db
+	tr.mongoPool = mongoPool
+	return tr
+
+}
+
 func NewTxnRunner(hosts, db string, max_session_count int) *TxnRuner {
 	tr := &TxnRuner{}
 	tr.dbName = db
