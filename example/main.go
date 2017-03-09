@@ -55,7 +55,7 @@ type obj struct {
 	Status int    `bson:"status"`
 }
 
-func SaveUserLoginInfoToDB(pool *mongo_pool_txn.TxnRuner) error {
+func SaveUserLoginInfoToDB(txnRunner *mongo_pool_txn.TxnRuner) error {
 	now := time.Now().Format(time.RFC3339)
 	ops := []txn.Op{{
 		C:      "coltest",
@@ -64,5 +64,5 @@ func SaveUserLoginInfoToDB(pool *mongo_pool_txn.TxnRuner) error {
 		Insert: obj{ID: now, Status: 1},
 	}}
 
-	return pool.Do(ops)
+	return txnRunner.Do(ops)
 }

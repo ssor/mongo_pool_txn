@@ -1,5 +1,5 @@
-# mongopool
-library to connect to mongodb
+# mongopool_txn
+library for run transactions on mongodb
 
 # features
 1. support the count of max connections config
@@ -7,20 +7,21 @@ library to connect to mongodb
 
 # how to use
 
-1. init a pool 
+1. init a txnRunner 
 ```
-	Mongo_pool = mongo_pool.NewMongoSessionPool("127.0.0.1", 3)
-	Mongo_pool.Run()
+	txnRunner = mongo_pool_txn.NewTxnRunner("127.0.0.1", "testdb", 2)
+	txnRunner.Run()
 ```
 
-2. get a session and after using, return the session
+2. do the transaction 
 ```
-	var err error
-	session, err := pool.GetSession()
-	defer func() {
-		pool.ReturnSession(session, err)
-	}()
-	if err != nil {
-		return err
-	}
+	now := time.Now().Format(time.RFC3339)
+	ops := []txn.Op{{
+		C:      "coltest",
+		Id:     now,
+		Assert: txn.DocMissing,
+		Insert: obj{ID: now, Status: 1},
+	}}
+
+	txnRunner.Do(ops)
 ```
